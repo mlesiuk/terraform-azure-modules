@@ -45,7 +45,7 @@ variable "capacity" {
 
   validation {
     condition     = var.family == "C" && (var.capacity < 0 || var.cache > 6)
-    error_message = "Invalid value of capacity. Valid values for a SKU family of C (Basic/Standard) are 0, 1, 2, 3, 4, 5, 6."
+    error_message = "Invalid value of capacity. Valid values for a SKU family of C (Basic/Standard) family are 0, 1, 2, 3, 4, 5, 6."
   }
 
   validation {
@@ -151,6 +151,12 @@ variable "replicas_per_master" {
   default     = null
 }
 
+variable "replicas_per_primary" {
+  type        = number
+  description = "(Optional) Amount of replicas to create per primary for this Redis Cache. If both replicas_per_primary and replicas_per_master are set, they need to be equal."
+  default     = null
+}
+
 variable "redis_version" {
   type        = string
   description = "(Optional) Redis version. Only major version needed. Possible values are 4 and 6. Defaults to 6."
@@ -161,4 +167,38 @@ variable "tags" {
   type        = map(string)
   description = "(Optional) A mapping of tags to assign to the resource."
   default     = {}
+}
+
+variable "tenant_settings" {
+  type        = map(string)
+  description = "(Optional) A mapping of tenant settings to assign to the resource."
+  default     = {}
+}
+
+variable "shard_count" {
+  type        = number
+  description = "(Optional) Only available when using the Premium SKU The number of Shards to create on the Redis Cluster."
+  default     = null
+
+  validation {
+    condition     = var.sku_name != "P"
+    error_message = "The subnet_id variable is only available when using the Premium SKU."
+  }
+}
+
+variable "subnet_id" {
+  type        = string
+  description = "(Optional) Only available when using the Premium SKU. The ID of the Subnet within which the Redis Cache should be deployed. This Subnet must only contain Azure Cache for Redis instances without any other type of resources. Changing this forces a new resource to be created."
+  default     = null
+
+  validation {
+    condition     = var.sku_name != "P"
+    error_message = "The subnet_id variable is only available when using the Premium SKU."
+  }
+}
+
+variable "zones" {
+  type        = set(string)
+  description = "(Optional) Specifies a list of Availability Zones in which this Redis Cache should be located. Changing this forces a new Redis Cache to be created."
+  default     = []
 }
