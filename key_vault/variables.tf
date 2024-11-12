@@ -34,7 +34,7 @@ variable "tenant_id" {
 }
 
 variable "access_policy" {
-  type = optional(list(object({
+  type = list(object({
     tenant_id               = string
     object_id               = string
     application_id          = optional(string)
@@ -42,7 +42,7 @@ variable "access_policy" {
     key_permissions         = optional(list(string))
     secret_permissions      = optional(list(string))
     storage_permissions     = optional(list(string))
-  })))
+  }))
   description = <<EOT
     access_policy = {
       tenant_id : "(Required) The Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Must match the tenant_id used above."
@@ -81,12 +81,12 @@ variable "enable_rbac_authorization" {
 }
 
 variable "network_acls" {
-  type = optional(object({
+  type = object({
     bypass                     = string
     default_action             = string
     ip_rules                   = optional(set(string))
     virtual_network_subnet_ids = optional(set(string))
-  }))
+  })
   description = <<EOT
     network_acls = {
       bypass : "(Required) Specifies which traffic can bypass the network rules. Possible values are AzureServices and None."
@@ -114,7 +114,7 @@ variable "soft_delete_retention_days" {
   description = "Optional) The number of days that items should be retained for once soft-deleted. This value can be between 7 and 90 (the default) days."
 
   validation {
-    condition     = var.soft_delete_retention_days < 7 || var.soft_delete_retention_days > 90
+    condition     = var.soft_delete_retention_days >= 7 && var.soft_delete_retention_days <= 90
     error_message = "Invalid parameter value. Value can be between 7 and 90 (the default) days."
   }
 }

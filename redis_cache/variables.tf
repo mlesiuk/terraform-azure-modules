@@ -8,7 +8,7 @@ variable "name" {
   }
 
   validation {
-    condition     = length(var.name) > 63
+    condition     = length(var.name) <= 63
     error_message = "The Redis Cache instance name length must not exceed 63 characters."
   }
 }
@@ -23,7 +23,7 @@ variable "resource_group_name" {
   }
 
   validation {
-    condition     = length(var.resource_group_name) > 90
+    condition     = length(var.resource_group_name) <= 90
     error_message = "The Redis Cache resource group name length must not exceed 90 characters."
   }
 }
@@ -44,12 +44,12 @@ variable "capacity" {
   default     = 0
 
   validation {
-    condition     = var.family == "C" && (var.capacity < 0 || var.cache > 6)
+    condition     = var.family == "C" && (var.capacity >= 0 || var.cache <= 6)
     error_message = "Invalid value of capacity. Valid values for a SKU family of C (Basic/Standard) family are 0, 1, 2, 3, 4, 5, 6."
   }
 
   validation {
-    condition     = var.family == "P" && (var.capacity < 1 || var.cache > 5)
+    condition     = var.family == "P" && (var.capacity >= 1 || var.cache <= 5)
     error_message = "Invalid value of capacity. Valid values for a SKU family of P (Premium) family are 1, 2, 3, 4, 5."
   }
 }
